@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "ventas",
     'rest_framework',
+    'useradmin',
 ]
 
 MIDDLEWARE = [
@@ -133,4 +134,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOWED_ORIGINS = []
 
-
+AUTH_USER_MODEL = 'useradmin.Usuario'
