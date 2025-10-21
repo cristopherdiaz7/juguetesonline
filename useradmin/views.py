@@ -1,0 +1,130 @@
+from rest_framework import generics, permissions
+from .models import Usuario
+from .serializer import UsuarioSerializer
+
+from django.contrib.auth import authenticate, login, logout
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+
+# Vistas para CRUD de Usuario usando DRF
+class UsuarioListView(generics.ListCreateAPIView):
+    queryset = Usuario.objects.all()
+    serializer_class = UsuarioSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_permissions(self):
+        if self.request.method == 'POST':
+            return [permissions.AllowAny()]
+        return [permissions.IsAuthenticated()]
+
+class UsuarioDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Usuario.objects.all()
+    serializer_class = UsuarioSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_permissions(self):
+        if self.request.user.is_staff:
+            return [permissions.IsAuthenticated()]
+        return [permissions.IsAuthenticated()]
+
+
+
+@csrf_exempt
+def login_view(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            username = data.get('username')
+            password = data.get('password')
+
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)  # Django guarda la sesión y la cookie
+                return JsonResponse({'message': 'Login correcto'})
+            else:
+                return JsonResponse({'error': 'Usuario o contraseña incorrectos'}, status=401)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'JSON inválido'}, status=400)
+
+    return JsonResponse({'error': 'Método no permitido'}, status=405)
+
+
+# Vista para logout
+@csrf_exempt
+def logout_view(request):
+    if request.method == 'POST':
+        logout(request)
+        return JsonResponse({'message': 'Logout correcto'})
+    return JsonResponse({'error': 'Método no permitido'}, status=405)
+
+
+# Vista para registro (registro de nuevos usuarios)
+@csrf_exempt
+def register_view(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            username = data.get('username')
+            password = data.get('password')
+            email = data.get('email')
+            tipo = data.get('tipo')
+            direccion = data.get('direccion')
+
+            if not username or not password:
+                return JsonResponse({'error': 'Username y password son requeridos'}, status=400)
+
+            if Usuario.objects.filter(username=username).exists():
+                return JsonResponse({'error': 'El usuario ya existe'}, status=400)
+
+            user = Usuario.objects.create_user(
+                username=username,
+                password=password,
+                email=email,
+                tipo=tipo,
+                direccion=direccion
+            )
+
+            return JsonResponse({
+                'message': 'Usuario registrado correctamente',
+                'user': {
+                    'id': user.id,
+                    'username': user.username,
+                    'email': user.email,
+                    'tipo': user.tipo
+                }
+            })
+
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'JSON inválido'}, status=400)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+
+    return JsonResponse({'error': 'Método no permitido'}, status=405)
+@csrf_exempt
+def register_view(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            username = data.get('username')
+            password = data.get('password')
+            email = data.get('email', '')
+            tipo = data.get('tipo', 'comprador')  # Valor por defecto
+            direccion = data.get('direccion', '')
+
+            if Usuario.objects.filter(username=username).exists():
+                return JsonResponse({'error': 'El usuario ya existe'}, status=400)
+
+            usuario = Usuario.objects.create_user(
+                username=username,
+                password=password,
+                email=email,
+                tipo=tipo,
+                direccion=direccion
+            )
+            return JsonResponse({'message': 'Usuario creado correctamente'})
+
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'JSON inválido'}, status=400)
+
+    return JsonResponse({'error': 'Método no permitido'}, status=405)

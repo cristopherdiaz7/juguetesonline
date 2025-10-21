@@ -1,44 +1,35 @@
 from rest_framework import viewsets
-from .serializer import (
-    UsuarioSerializer,
-    ProductoSerializer,
-    CarritoDeComprasSerializer,
-    CarritoProductoSerializer,
-    PedidoSerializer,
-    PagoSerializer,
-    EnvioSerializer,
-    ReseñaSerializer
-)
-from .models import Usuario, Producto, CarritoDeCompras, CarritoProducto, Pedido, Pago, Envio, Reseña
+from .models import *
+from .serializer import *
 
-class UsuarioView(viewsets.ModelViewSet):
-    serializer_class = UsuarioSerializer
+class UsuarioViewSet(viewsets.ModelViewSet):
     queryset = Usuario.objects.all()
+    serializer_class = UsuarioSerializer
 
-class ProductoView(viewsets.ModelViewSet):
-    serializer_class = ProductoSerializer
+class ProductoViewSet(viewsets.ModelViewSet):
     queryset = Producto.objects.all()
+    serializer_class = ProductoSerializer
 
-class CarritoDeComprasView(viewsets.ModelViewSet):
-    serializer_class = CarritoDeComprasSerializer
+class CarritoDeComprasViewSet(viewsets.ModelViewSet):
     queryset = CarritoDeCompras.objects.all()
+    serializer_class = CarritoDeComprasSerializer
 
-class CarritoProductoView(viewsets.ModelViewSet):
-    serializer_class = CarritoProductoSerializer
+class CarritoProductoViewSet(viewsets.ModelViewSet):
     queryset = CarritoProducto.objects.all()
+    serializer_class = CarritoProductoSerializer
 
-class PedidoView(viewsets.ModelViewSet):
-    serializer_class = PedidoSerializer
+class PedidoViewSet(viewsets.ModelViewSet):
     queryset = Pedido.objects.all()
+    serializer_class = PedidoSerializer
 
-class PagoView(viewsets.ModelViewSet):
-    serializer_class = PagoSerializer
+class PagoViewSet(viewsets.ModelViewSet):
     queryset = Pago.objects.all()
+    serializer_class = PagoSerializer
 
-class EnvioView(viewsets.ModelViewSet):
-    serializer_class = EnvioSerializer
+class EnvioViewSet(viewsets.ModelViewSet):
     queryset = Envio.objects.all()
+    serializer_class = EnvioSerializer
 
-class ReseñaView(viewsets.ModelViewSet):
-    serializer_class = ReseñaSerializer
+class ReseñaViewSet(viewsets.ModelViewSet):
     queryset = Reseña.objects.all()
+    serializer_class = ReseñaSerializer
