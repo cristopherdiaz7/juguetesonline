@@ -14,6 +14,6 @@ router.register(r'envios', views.EnvioView, basename='envios')
 router.register(r'reseñas', views.ReseñaView, basename='reseñas')
 
 urlpatterns = [
-    path('dualcash/model', include(router.urls)),
+    path('dualcash/model/', include(router.urls)),
 ]
 
