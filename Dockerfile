@@ -18,6 +18,8 @@ RUN apt-get update && apt-get install -y \
 
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
+# Ensure PyMySQL is installed even if requirements resolution had issues
+RUN pip install --no-cache-dir PyMySQL
 
 COPY . .
 
