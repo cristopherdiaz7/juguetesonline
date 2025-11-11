@@ -7,3 +7,5 @@ dj-database-url
 whitenoise
 django-cors-headers
 mysqlclient
+PyMySQL
+
