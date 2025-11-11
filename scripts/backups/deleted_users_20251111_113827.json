@@ -1,0 +1,26 @@
+{
+  "timestamp": "2025-11-11T11:38:27.395843Z",
+  "deleted": [],
+  "skipped": [
+    {
+      "username": "usuario1",
+      "email": "usuario1@ejemplo.com"
+    },
+    {
+      "username": "usuario_jwt_2024",
+      "email": "usuario_jwt@ejemplo.com"
+    },
+    {
+      "username": "prueba123",
+      "email": "prueba@gmail.com"
+    },
+    {
+      "username": "cristodiaz",
+      "email": "crist@example.com"
+    },
+    {
+      "username": "testbuyer1",
+      "email": "tb1@example.com"
+    }
+  ]
+}

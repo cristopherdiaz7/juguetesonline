@@ -1,0 +1,135 @@
+{
+  "exported_at": "2025-11-11T01:26:23.058921",
+  "pedidos": [
+    {
+      "id": 1,
+      "usuario_id": 1,
+      "usuario_nombre": "cristo",
+      "fecha": "2025-11-10",
+      "total": 53000.0,
+      "estado": "rechazado",
+      "items": [],
+      "envio": {
+        "id": 1,
+        "direccion": "san alberto 793, villa atuel. Tel: 2625462235",
+        "empresa_envio": "",
+        "estado": "pendiente"
+      },
+      "pagos": []
+    },
+    {
+      "id": 2,
+      "usuario_id": 1,
+      "usuario_nombre": "cristo",
+      "fecha": "2025-11-10",
+      "total": 11000.0,
+      "estado": "aprobado",
+      "items": [],
+      "envio": {
+        "id": 2,
+        "direccion": "san alberto 793, san rafael. Tel: 2625462235",
+        "empresa_envio": "",
+        "estado": "pendiente"
+      },
+      "pagos": []
+    },
+    {
+      "id": 3,
+      "usuario_id": 1,
+      "usuario_nombre": "cristo",
+      "fecha": "2025-11-10",
+      "total": 9700.0,
+      "estado": "aprobado",
+      "items": [
+        {
+          "id": 1,
+          "producto_id": null,
+          "producto_nombre": null,
+          "cantidad": 1,
+          "precio": 5200.0
+        },
+        {
+          "id": 2,
+          "producto_id": null,
+          "producto_nombre": null,
+          "cantidad": 1,
+          "precio": 4500.0
+        }
+      ],
+      "envio": {
+        "id": 3,
+        "direccion": "ballofet 54, san rafael. Tel: 2625462235",
+        "empresa_envio": "",
+        "estado": "pendiente"
+      },
+      "pagos": []
+    },
+    {
+      "id": 4,
+      "usuario_id": 1,
+      "usuario_nombre": "cristo",
+      "fecha": "2025-11-10",
+      "total": 57000.0,
+      "estado": "pendiente",
+      "items": [],
+      "envio": {
+        "id": 4,
+        "direccion": "ballofet 1, san rafael mendoza. Tel: 2625462235",
+        "empresa_envio": "",
+        "estado": "pendiente"
+      },
+      "pagos": []
+    },
+    {
+      "id": 5,
+      "usuario_id": 1,
+      "usuario_nombre": "cristo",
+      "fecha": "2025-11-11",
+      "total": 52000.0,
+      "estado": "pendiente",
+      "items": [],
+      "envio": {
+        "id": 5,
+        "direccion": "ballofet 54 , san rafael mendoza. Tel: 2625462235",
+        "empresa_envio": "",
+        "estado": "pendiente"
+      },
+      "pagos": []
+    },
+    {
+      "id": 6,
+      "usuario_id": 1,
+      "usuario_nombre": "cristo",
+      "fecha": "2025-11-11",
+      "total": 52000.0,
+      "estado": "pendiente",
+      "items": [],
+      "envio": {
+        "id": 6,
+        "direccion": "ballofet 2, san rafael mendoza. Tel: 2625462235",
+        "empresa_envio": "",
+        "estado": "pendiente"
+      },
+      "pagos": []
+    },
+    {
+      "id": 7,
+      "usuario_id": 2,
+      "usuario_nombre": "shellbuyer",
+      "fecha": "2025-11-11",
+      "total": 200.0,
+      "estado": "pendiente",
+      "items": [
+        {
+          "id": 3,
+          "producto_id": 61,
+          "producto_nombre": "Producto Test Shell",
+          "cantidad": 2,
+          "precio": 100.0
+        }
+      ],
+      "envio": null,
+      "pagos": []
+    }
+  ]
+}

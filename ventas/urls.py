@@ -11,6 +11,9 @@ router.register(r'pedidos', PedidoViewSet)
 router.register(r'pagos', PagoViewSet)
 router.register(r'envios', EnvioViewSet)
 router.register(r'resenas', ReseñaViewSet)
+router.register(r'notifications', NotificationViewSet)
+
+# Nota: los endpoints están disponibles en /api/
 
 urlpatterns = [
     path('', include(router.urls)),

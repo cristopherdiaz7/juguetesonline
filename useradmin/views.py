@@ -1,6 +1,10 @@
 from rest_framework import generics, permissions
+from rest_framework.permissions import IsAdminUser
 from .models import Usuario
 from .serializer import UsuarioSerializer
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
 from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse
@@ -11,12 +15,12 @@ import json
 class UsuarioListView(generics.ListCreateAPIView):
     queryset = Usuario.objects.all()
     serializer_class = UsuarioSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
+    # Sólo los administradores pueden listar usuarios; cualquiera puede registrarse (POST)
     def get_permissions(self):
         if self.request.method == 'POST':
             return [permissions.AllowAny()]
-        return [permissions.IsAuthenticated()]
+        # GET (list) y otros métodos de lectura/edición requieren ser admin
+        return [IsAdminUser()]
 
 class UsuarioDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Usuario.objects.all()
@@ -101,6 +105,17 @@ def register_view(request):
             return JsonResponse({'error': str(e)}, status=400)
 
     return JsonResponse({'error': 'Método no permitido'}, status=405)
+
+
+# Endpoint para obtener datos del usuario autenticado
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def me_view(request):
+    # Debug: log the Authorization header and user for troubleshooting
+    # debug prints removed
+    serializer = UsuarioSerializer(request.user)
+    data = serializer.data
+    return Response(data)
 @csrf_exempt
 def register_view(request):
     if request.method == 'POST':

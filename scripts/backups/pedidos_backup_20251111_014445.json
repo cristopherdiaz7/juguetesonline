@@ -1,0 +1,166 @@
+{
+  "exported_at": "2025-11-11T01:44:45.947611",
+  "pedidos": [
+    {
+      "id": 1,
+      "usuario_id": 1,
+      "usuario_nombre": "cristo",
+      "fecha": "2025-11-11",
+      "total": 53000.0,
+      "estado": "rechazado",
+      "items": [],
+      "envio": {
+        "id": 14,
+        "direccion": "san alberto 793, villa atuel. Tel: 2625462235",
+        "empresa_envio": "",
+        "estado": "pendiente"
+      },
+      "pagos": []
+    },
+    {
+      "id": 2,
+      "usuario_id": 1,
+      "usuario_nombre": "cristo",
+      "fecha": "2025-11-11",
+      "total": 11000.0,
+      "estado": "aprobado",
+      "items": [],
+      "envio": {
+        "id": 15,
+        "direccion": "san alberto 793, san rafael. Tel: 2625462235",
+        "empresa_envio": "",
+        "estado": "pendiente"
+      },
+      "pagos": []
+    },
+    {
+      "id": 3,
+      "usuario_id": 1,
+      "usuario_nombre": "cristo",
+      "fecha": "2025-11-11",
+      "total": 9700.0,
+      "estado": "aprobado",
+      "items": [
+        {
+          "id": 9,
+          "producto_id": null,
+          "producto_nombre": null,
+          "cantidad": 1,
+          "precio": 5200.0
+        },
+        {
+          "id": 10,
+          "producto_id": null,
+          "producto_nombre": null,
+          "cantidad": 1,
+          "precio": 4500.0
+        }
+      ],
+      "envio": {
+        "id": 16,
+        "direccion": "ballofet 54, san rafael. Tel: 2625462235",
+        "empresa_envio": "",
+        "estado": "pendiente"
+      },
+      "pagos": []
+    },
+    {
+      "id": 4,
+      "usuario_id": 1,
+      "usuario_nombre": "cristo",
+      "fecha": "2025-11-11",
+      "total": 57000.0,
+      "estado": "pendiente",
+      "items": [],
+      "envio": {
+        "id": 17,
+        "direccion": "ballofet 1, san rafael mendoza. Tel: 2625462235",
+        "empresa_envio": "",
+        "estado": "pendiente"
+      },
+      "pagos": []
+    },
+    {
+      "id": 5,
+      "usuario_id": 1,
+      "usuario_nombre": "cristo",
+      "fecha": "2025-11-11",
+      "total": 52000.0,
+      "estado": "pendiente",
+      "items": [],
+      "envio": {
+        "id": 18,
+        "direccion": "ballofet 54 , san rafael mendoza. Tel: 2625462235",
+        "empresa_envio": "",
+        "estado": "pendiente"
+      },
+      "pagos": []
+    },
+    {
+      "id": 6,
+      "usuario_id": 1,
+      "usuario_nombre": "cristo",
+      "fecha": "2025-11-11",
+      "total": 52000.0,
+      "estado": "pendiente",
+      "items": [],
+      "envio": {
+        "id": 19,
+        "direccion": "ballofet 2, san rafael mendoza. Tel: 2625462235",
+        "empresa_envio": "",
+        "estado": "pendiente"
+      },
+      "pagos": []
+    },
+    {
+      "id": 7,
+      "usuario_id": 2,
+      "usuario_nombre": "shellbuyer",
+      "fecha": "2025-11-11",
+      "total": 200.0,
+      "estado": "pendiente",
+      "items": [
+        {
+          "id": 11,
+          "producto_id": 61,
+          "producto_nombre": "Producto Test Shell",
+          "cantidad": 2,
+          "precio": 100.0
+        }
+      ],
+      "envio": null,
+      "pagos": []
+    },
+    {
+      "id": 8,
+      "usuario_id": 1,
+      "usuario_nombre": "cristo",
+      "fecha": "2025-11-11",
+      "total": 48500.0,
+      "estado": "aprobado",
+      "items": [
+        {
+          "id": 4,
+          "producto_id": 14,
+          "producto_nombre": "Garfield Peluche 30cm",
+          "cantidad": 2,
+          "precio": 18000.0
+        },
+        {
+          "id": 5,
+          "producto_id": 37,
+          "producto_nombre": "Muñeco Star Wars Retro",
+          "cantidad": 1,
+          "precio": 12500.0
+        }
+      ],
+      "envio": {
+        "id": 7,
+        "direccion": "san alberto 793, villa atuel mendoza. Tel: 2625462235",
+        "empresa_envio": "",
+        "estado": "pendiente"
+      },
+      "pagos": []
+    }
+  ]
+}
