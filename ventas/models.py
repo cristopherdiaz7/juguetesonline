@@ -23,8 +23,17 @@ class Producto(models.Model):
     nombre = models.CharField(max_length=100)
     precio = models.DecimalField(max_digits=10, decimal_places=2)
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    CATEGORIA_CHOICES = [
+        ('figuras', 'Figuras'),
+        ('peluches', 'Peluches'),
+        ('posters', 'Posters'),
+        ('retro', 'Retro'),
+        ('vehiculos', 'Vehículos'),
+    ]
+    categoria = models.CharField(max_length=20, choices=CATEGORIA_CHOICES, default='figuras')
     descripcion = models.TextField()
     stock = models.IntegerField()
+    imagen = models.ImageField(upload_to='productos/', null=True, blank=True)
 
     def __str__(self):
         return self.nombre
@@ -57,6 +66,17 @@ class Pedido(models.Model):
     def __str__(self):
         return f"Pedido #{self.id} de {self.usuario.nombre}"
 
+
+class PedidoItem(models.Model):
+    pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name='items')
+    producto = models.ForeignKey(Producto, on_delete=models.SET_NULL, null=True, blank=True)
+    cantidad = models.IntegerField()
+    precio = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        prod = self.producto.nombre if self.producto else 'Producto eliminado'
+        return f"{self.cantidad} x {prod} (Pedido #{self.pedido.id})"
+
 class Pago(models.Model):
     pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE)
     monto = models.DecimalField(max_digits=10, decimal_places=2)
@@ -84,4 +104,25 @@ class Reseña(models.Model):
 
     def __str__(self):
         return f"Reseña de {self.usuario.nombre} para {self.producto.nombre}"
+
+
+class Notification(models.Model):
+    TIPO_CHOICES = [
+        ('info', 'Info'),
+        ('success', 'Success'),
+        ('warning', 'Warning'),
+        ('danger', 'Danger'),
+    ]
+
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='notifications')
+    message = models.TextField()
+    tipo = models.CharField(max_length=20, choices=TIPO_CHOICES, default='info')
+    read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"Notification for {self.usuario.nombre}: {self.message[:40]}"
 

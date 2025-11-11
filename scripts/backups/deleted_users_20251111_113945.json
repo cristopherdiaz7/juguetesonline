@@ -1,0 +1,36 @@
+{
+  "timestamp": "2025-11-11T11:39:45.124847Z",
+  "deleted": [
+    {
+      "model": "auth.Usuario",
+      "id": 1,
+      "username": "usuario1",
+      "email": "usuario1@ejemplo.com"
+    },
+    {
+      "model": "auth.Usuario",
+      "id": 2,
+      "username": "usuario_jwt_2024",
+      "email": "usuario_jwt@ejemplo.com"
+    },
+    {
+      "model": "auth.Usuario",
+      "id": 3,
+      "username": "prueba123",
+      "email": "prueba@gmail.com"
+    },
+    {
+      "model": "auth.Usuario",
+      "id": 4,
+      "username": "cristodiaz",
+      "email": "crist@example.com"
+    },
+    {
+      "model": "auth.Usuario",
+      "id": 6,
+      "username": "testbuyer1",
+      "email": "tb1@example.com"
+    }
+  ],
+  "skipped": []
+}

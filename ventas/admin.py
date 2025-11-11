@@ -18,9 +18,16 @@ class UsuarioAdmin(admin.ModelAdmin):
 
 @admin.register(Producto)
 class ProductoAdmin(admin.ModelAdmin):
-    list_display = ('id', 'nombre', 'precio', 'stock', 'usuario')
+    list_display = ('id', 'nombre', 'precio', 'stock', 'usuario', 'imagen_tag')
     search_fields = ('nombre',)
     list_filter = ('usuario',)
+
+    def imagen_tag(self, obj):
+        if getattr(obj, 'imagen', None):
+            return f"<img src='{obj.imagen.url}' style='max-height:50px; max-width:100px;'/>"
+        return '-'
+    imagen_tag.short_description = 'Imagen'
+    imagen_tag.allow_tags = True
 
 @admin.register(CarritoDeCompras)
 class CarritoDeComprasAdmin(admin.ModelAdmin):
