@@ -9,6 +9,8 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y \
     build-essential \
     default-libmysqlclient-dev \
+    libmariadb-dev-compat \
+    pkg-config \
     libssl-dev \
     libjpeg-dev \
     zlib1g-dev \
