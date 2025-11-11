@@ -122,9 +122,21 @@ if not os.getenv('DATABASE_URL'):
     default_db['HOST'] = os.getenv('DB_HOST') or os.getenv('MYSQLHOST') or os.getenv('MYSQL_HOST') or default_db['HOST']
     default_db['PORT'] = os.getenv('DB_PORT') or os.getenv('MYSQLPORT') or os.getenv('MYSQL_PORT') or default_db['PORT']
 
-DATABASES = {
-    'default': dj_database_url.parse(os.getenv('DATABASE_URL')) if os.getenv('DATABASE_URL') else default_db
-}
+# Try to parse DATABASE_URL if provided; fall back to default_db on parse errors
+DATABASE_URL_ENV = os.getenv('DATABASE_URL')
+if DATABASE_URL_ENV:
+    try:
+        parsed_db = dj_database_url.parse(DATABASE_URL_ENV)
+    except Exception as e:
+        # Avoid crashing the app at import time if the provided DATABASE_URL is invalid.
+        # Fall back to the component-based vars (already merged into default_db above).
+        # Log a visible warning to stderr so deploy logs show the issue.
+        import sys
+        print(f"WARNING: invalid DATABASE_URL provided, falling back to parts: {e}", file=sys.stderr)
+        parsed_db = default_db
+    DATABASES = {'default': parsed_db}
+else:
+    DATABASES = {'default': default_db}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
