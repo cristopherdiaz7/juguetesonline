@@ -30,4 +30,6 @@ RUN python manage.py collectstatic --noinput || true
 
 EXPOSE 8000
 
-CMD ["gunicorn", "juguetesonline.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3"]
+# Use shell form so environment variables like $PORT are expanded at runtime.
+# If PORT is not provided by the host, default to 8000.
+CMD ["sh", "-c", "gunicorn juguetesonline.wsgi:application --bind 0.0.0.0:${PORT:-8000} --workers 3"]
