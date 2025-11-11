@@ -8,4 +8,6 @@ whitenoise
 django-cors-headers
 mysqlclient
 PyMySQL
+# rebuild: force Docker layer cache invalidation
+
 
