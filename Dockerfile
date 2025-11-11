@@ -23,6 +23,11 @@ RUN pip install --no-cache-dir PyMySQL
 
 COPY . .
 
+# Copy entrypoint and make it executable. The script will expand ${PORT} and
+# run either the provided start command or gunicorn by default.
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
 ENV DJANGO_SETTINGS_MODULE=juguetesonline.settings
 
 # Collect static files
@@ -30,6 +35,7 @@ RUN python manage.py collectstatic --noinput || true
 
 EXPOSE 8000
 
-# Use shell form so environment variables like $PORT are expanded at runtime.
-# If PORT is not provided by the host, default to 8000.
-CMD ["sh", "-c", "gunicorn juguetesonline.wsgi:application --bind 0.0.0.0:${PORT:-8000} --workers 3"]
+# Use an entrypoint script so any Railway-provided Start Command is executed via
+# a shell (allowing ${PORT} expansion). If no command is provided, entrypoint
+# will start gunicorn with ${PORT:-8000}.
+ENTRYPOINT ["/entrypoint.sh"]
