@@ -1,0 +1,9 @@
+Django==5.1.7
+djangorestframework
+drf-spectacular
+djangorestframework-simplejwt
+gunicorn
+dj-database-url
+whitenoise
+django-cors-headers
+mysqlclient

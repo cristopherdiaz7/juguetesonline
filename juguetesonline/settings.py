@@ -10,7 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+import os
 from pathlib import Path
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,12 +22,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-1hzthwcq&(m&fq!_46n3-0575$i59*1fx!7%@0f^xjhc33hgxn'
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-local-dev-key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'False').lower() in ('1', 'true', 'yes')
 
-ALLOWED_HOSTS = []
+# Hosts allowed (coma-separados en la variable de entorno)
+ALLOWED_HOSTS = [h.strip() for h in os.getenv('ALLOWED_HOSTS', '').split(',') if h.strip()]
 
 
 # Application definition
@@ -54,6 +57,8 @@ AUTH_USER_MODEL = 'useradmin.Usuario'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    # WhiteNoise: servir archivos estáticos en producción
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -87,18 +92,19 @@ WSGI_APPLICATION = 'juguetesonline.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+# Database: prefer DATABASE_URL (Railway) but keep sensible local default
+default_db = {
+    'ENGINE': 'django.db.backends.mysql',
+    'NAME': os.getenv('DB_NAME', 'ventas_db'),
+    'USER': os.getenv('DB_USER', 'root'),
+    'PASSWORD': os.getenv('DB_PASSWORD', '1234'),
+    'HOST': os.getenv('DB_HOST', 'localhost'),
+    'PORT': os.getenv('DB_PORT', '3306'),
+    'OPTIONS': {'charset': 'utf8mb4'},
+}
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ventas_db',  
-        'USER': 'root',         
-        'PASSWORD': '1234',  
-        'HOST': 'localhost',          
-        'PORT': '3306',               
-        'OPTIONS': {
-            'charset': 'utf8mb4',  
-        }
-    }
+    'default': dj_database_url.parse(os.getenv('DATABASE_URL')) if os.getenv('DATABASE_URL') else default_db
 }
 
 # Password validation
@@ -135,18 +141,22 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+# Compressed manifest storage recomendado para producción (WhiteNoise)
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CORS_ALLOWED_ORIGINS = []
+CORS_ALLOWED_ORIGINS = [u.strip() for u in os.getenv('CORS_ALLOWED_ORIGINS', '').split(',') if u.strip()]
 
-CORS_ALLOW_ALL_ORIGINS = True
+# Si necesitas permitir todos (no recomendado en prod) puedes usar la variable env
+CORS_ALLOW_ALL_ORIGINS = os.getenv('CORS_ALLOW_ALL_ORIGINS', 'False').lower() in ('1', 'true', 'yes')
 
-AUTH_USER_MODEL = 'useradmin.Usuario'
+# AUTH_USER_MODEL ya está definido más arriba; mantener el valor existente
 
 from datetime import timedelta
 
