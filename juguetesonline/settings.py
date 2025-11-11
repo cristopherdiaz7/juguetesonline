@@ -103,6 +103,25 @@ default_db = {
     'OPTIONS': {'charset': 'utf8mb4'},
 }
 
+# If DATABASE_URL is not provided, allow Railway-style MYSQL_* env vars
+# so the service can either provide a full DATABASE_URL or separate parts.
+if not os.getenv('DATABASE_URL'):
+    # name: prefer DB_NAME, then common Railway names
+    default_db['NAME'] = os.getenv('DB_NAME') or os.getenv('MYSQL_DATABASE') or os.getenv('MYSQLDATABASE') or default_db['NAME']
+    # user: prefer DB_USER then MYSQL variants
+    default_db['USER'] = os.getenv('DB_USER') or os.getenv('MYSQLUSER') or os.getenv('MYSQL_USER') or default_db['USER']
+    # password: prefer DB_PASSWORD then MYSQL variants (including root password)
+    default_db['PASSWORD'] = (
+        os.getenv('DB_PASSWORD')
+        or os.getenv('MYSQLPASSWORD')
+        or os.getenv('MYSQL_PASSWORD')
+        or os.getenv('MYSQL_ROOT_PASSWORD')
+        or default_db['PASSWORD']
+    )
+    # host/port
+    default_db['HOST'] = os.getenv('DB_HOST') or os.getenv('MYSQLHOST') or os.getenv('MYSQL_HOST') or default_db['HOST']
+    default_db['PORT'] = os.getenv('DB_PORT') or os.getenv('MYSQLPORT') or os.getenv('MYSQL_PORT') or default_db['PORT']
+
 DATABASES = {
     'default': dj_database_url.parse(os.getenv('DATABASE_URL')) if os.getenv('DATABASE_URL') else default_db
 }
