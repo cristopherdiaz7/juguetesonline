@@ -26,6 +26,8 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-local-dev-key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'False').lower() in ('1', 'true', 'yes')
+# Environment indicator: 'development' or 'production'. Optional override via ENVIRONMENT env var.
+ENVIRONMENT = os.getenv('ENVIRONMENT', 'development' if DEBUG else 'production')
 
 # Hosts allowed (coma-separados en la variable de entorno)
 ALLOWED_HOSTS = [h.strip() for h in os.getenv('ALLOWED_HOSTS', '').split(',') if h.strip()]
@@ -93,37 +95,21 @@ WSGI_APPLICATION = 'juguetesonline.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 # Database: prefer DATABASE_URL (Railway) but keep sensible local default
+# Use Railway-provided env vars when available: MYSQL_DATABASE, MYSQLUSER, MYSQLPASSWORD, MYSQLHOST, MYSQLPORT
 default_db = {
     'ENGINE': 'django.db.backends.mysql',
-    'NAME': os.getenv('DB_NAME', 'ventas_db'),
-    'USER': os.getenv('DB_USER', 'root'),
-    'PASSWORD': os.getenv('DB_PASSWORD', '1234'),
-    'HOST': os.getenv('DB_HOST', 'localhost'),
-    'PORT': os.getenv('DB_PORT', '3306'),
+    'NAME': os.getenv('MYSQL_DATABASE', os.getenv('DB_NAME', 'railway')),
+    'USER': os.getenv('MYSQLUSER', os.getenv('DB_USER', 'root')),
+    'PASSWORD': os.getenv('MYSQLPASSWORD', os.getenv('DB_PASSWORD', 'PUYkXYrRyjTCfVOMvNPfLAQfZGhdqVSm')),
+    'HOST': os.getenv('MYSQLHOST', os.getenv('DB_HOST', 'shinkansen.proxy.rlwy.net')),
+    'PORT': os.getenv('MYSQLPORT', os.getenv('DB_PORT', '40112')),
     'OPTIONS': {'charset': 'utf8mb4'},
 }
 
-# If DATABASE_URL is not provided, allow Railway-style MYSQL_* env vars
-# so the service can either provide a full DATABASE_URL or separate parts.
-if not os.getenv('DATABASE_URL'):
-    # name: prefer DB_NAME, then common Railway names
-    default_db['NAME'] = os.getenv('DB_NAME') or os.getenv('MYSQL_DATABASE') or os.getenv('MYSQLDATABASE') or default_db['NAME']
-    # user: prefer DB_USER then MYSQL variants
-    default_db['USER'] = os.getenv('DB_USER') or os.getenv('MYSQLUSER') or os.getenv('MYSQL_USER') or default_db['USER']
-    # password: prefer DB_PASSWORD then MYSQL variants (including root password)
-    default_db['PASSWORD'] = (
-        os.getenv('DB_PASSWORD')
-        or os.getenv('MYSQLPASSWORD')
-        or os.getenv('MYSQL_PASSWORD')
-        or os.getenv('MYSQL_ROOT_PASSWORD')
-        or default_db['PASSWORD']
-    )
-    # host/port
-    default_db['HOST'] = os.getenv('DB_HOST') or os.getenv('MYSQLHOST') or os.getenv('MYSQL_HOST') or default_db['HOST']
-    default_db['PORT'] = os.getenv('DB_PORT') or os.getenv('MYSQLPORT') or os.getenv('MYSQL_PORT') or default_db['PORT']
-
-# Try to parse DATABASE_URL if provided; fall back to default_db on parse errors
-DATABASE_URL_ENV = os.getenv('DATABASE_URL')
+# If a full DATABASE_URL is not provided, allow Railway-style MYSQL_URL or MYSQL_PUBLIC_URL
+# to act as the connection string. Otherwise the separate MYSQL_* vars above will be used.
+# Accept multiple names for backward compatibility with different Railway exports.
+DATABASE_URL_ENV = os.getenv('DATABASE_URL') or os.getenv('MYSQL_URL') or os.getenv('MYSQL_PUBLIC_URL')
 if DATABASE_URL_ENV:
     try:
         parsed_db = dj_database_url.parse(DATABASE_URL_ENV)
@@ -186,6 +172,31 @@ CORS_ALLOWED_ORIGINS = [u.strip() for u in os.getenv('CORS_ALLOWED_ORIGINS', '')
 
 # Si necesitas permitir todos (no recomendado en prod) puedes usar la variable env
 CORS_ALLOW_ALL_ORIGINS = os.getenv('CORS_ALLOW_ALL_ORIGINS', 'False').lower() in ('1', 'true', 'yes')
+
+# Asegurar que se permitan los headers y métodos comunes usados por el frontend
+try:
+    from corsheaders.defaults import default_headers, default_methods
+except Exception:
+    # Si por alguna razón corsheaders no está disponible en tiempo de import,
+    # definimos valores por defecto razonables para evitar fallos de importación.
+    default_headers = (
+        'accept', 'accept-encoding', 'authorization', 'content-type',
+        'dnt', 'origin', 'user-agent', 'x-csrftoken', 'x-requested-with',
+    )
+    default_methods = ('DELETE', 'GET', 'OPTIONS', 'PATCH', 'POST', 'PUT')
+
+# Permitir headers que el frontend necesita (Authorization, Content-Type, etc.)
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    'authorization',
+    'content-type',
+]
+
+# Asegurar que los métodos HTTP habituales estén permitidos en preflight
+CORS_ALLOW_METHODS = list(default_methods)
+
+# Si el frontend usa cookies de sesión, habilitar credenciales. Para JWT no es necesario,
+# pero no causa problemas si está en False.
+CORS_ALLOW_CREDENTIALS = False
 
 # AUTH_USER_MODEL ya está definido más arriba; mantener el valor existente
 
