@@ -8,6 +8,8 @@ whitenoise
 django-cors-headers
 mysqlclient
 PyMySQL
+# Image handling
+Pillow
 # rebuild: force Docker layer cache invalidation
 
 
