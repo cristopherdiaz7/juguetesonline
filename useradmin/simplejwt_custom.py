@@ -56,3 +56,47 @@ class ExtendedTokenObtainPairSerializer(TokenObtainPairSerializer):
 
 class ExtendedTokenObtainPairView(TokenObtainPairView):
     serializer_class = ExtendedTokenObtainPairSerializer
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.views import APIView
+import logging
+
+
+class DirectTokenObtainView(APIView):
+    """Direct token endpoint: accepts `username` or `email` and `password`.
+
+    This view performs an explicit `authenticate()` call and returns
+    `access`/`refresh` tokens using `RefreshToken.for_user` on success.
+    It's more explicit and logs detailed info to help debug 401s in prod.
+    """
+
+    def post(self, request, *args, **kwargs):
+        logger = logging.getLogger('useradmin.token')
+        data = request.data or {}
+        username = data.get('username')
+        password = data.get('password')
+        # If email provided, try to map to username
+        if not username and data.get('email'):
+            try:
+                from .models import Usuario as UsuarioModel
+                u = UsuarioModel.objects.filter(email__iexact=data.get('email')).first()
+                if u:
+                    username = u.username
+            except Exception:
+                pass
+
+        logger.info('DirectTokenObtain: auth attempt username=%s present_password=%s', username, bool(password))
+
+        if not username or not password:
+            return Response({'detail': 'username/email and password required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        from django.contrib.auth import authenticate
+        user = authenticate(username=username, password=password)
+        if user is None:
+            logger.warning('DirectTokenObtain: authenticate failed for username=%s', username)
+            return Response({'detail': 'No active account found with the given credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        # Build tokens
+        refresh = RefreshToken.for_user(user)
+        return Response({'refresh': str(refresh), 'access': str(refresh.access_token)}, status=status.HTTP_200_OK)

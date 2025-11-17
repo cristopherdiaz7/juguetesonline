@@ -22,6 +22,7 @@ from rest_framework_simplejwt.views import (
 )
 from useradmin.simplejwt_custom import SafeTokenRefreshView
 from useradmin.simplejwt_custom import ExtendedTokenObtainPairView
+from useradmin.simplejwt_custom import DirectTokenObtainView
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
 from .health import health
 from django.conf import settings
@@ -33,6 +34,8 @@ urlpatterns = [
     path('api/user/', include('useradmin.urls')),  # URLs para la app useradmin
     # JWT endpoints
     path('api/token/', ExtendedTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    # Alternate direct endpoint that accepts email or username and returns tokens
+    path('api/token/custom/', DirectTokenObtainView.as_view(), name='token_obtain_pair_custom'),
     path('api/token/refresh/', SafeTokenRefreshView.as_view(), name='token_refresh'),
 ]
 
