@@ -27,6 +27,8 @@ COPY . .
 # run either the provided start command or gunicorn by default.
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
+COPY entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 RUN ln -s /entrypoint.sh /docker-entrypoint.sh || true
 
 ENV DJANGO_SETTINGS_MODULE=juguetesonline.settings
