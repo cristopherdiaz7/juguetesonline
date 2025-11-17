@@ -57,6 +57,12 @@ REST_FRAMEWORK = {
 
 AUTH_USER_MODEL = 'useradmin.Usuario'
 
+# Custom authentication backend: try useradmin first, then legacy ventas table
+AUTHENTICATION_BACKENDS = [
+    'useradmin.backends.LegacyVentasBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     # WhiteNoise: servir archivos estáticos en producción
