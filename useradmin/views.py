@@ -10,6 +10,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
+from django.db import transaction
+from ventas.models import Usuario as VentasUsuario
 
 # Vistas para CRUD de Usuario usando DRF
 class UsuarioListView(generics.ListCreateAPIView):
@@ -71,9 +73,9 @@ def register_view(request):
             data = json.loads(request.body)
             username = data.get('username')
             password = data.get('password')
-            email = data.get('email')
-            tipo = data.get('tipo')
-            direccion = data.get('direccion')
+            email = data.get('email', '')
+            tipo = data.get('tipo', 'comprador')  # Valor por defecto
+            direccion = data.get('direccion', '')
 
             if not username or not password:
                 return JsonResponse({'error': 'Username y password son requeridos'}, status=400)
@@ -81,23 +83,30 @@ def register_view(request):
             if Usuario.objects.filter(username=username).exists():
                 return JsonResponse({'error': 'El usuario ya existe'}, status=400)
 
-            user = Usuario.objects.create_user(
-                username=username,
-                password=password,
-                email=email,
-                tipo=tipo,
-                direccion=direccion
-            )
+            # Crear ambos registros en una transacción: Django auth (useradmin.Usuario)
+            # y la tabla legada de ventas (ventas.Usuario) duplicando el hash de contraseña.
+            with transaction.atomic():
+                usuario = Usuario.objects.create_user(
+                    username=username,
+                    password=password,
+                    email=email,
+                    tipo=tipo,
+                    direccion=direccion
+                )
 
-            return JsonResponse({
-                'message': 'Usuario registrado correctamente',
-                'user': {
-                    'id': user.id,
-                    'username': user.username,
-                    'email': user.email,
-                    'tipo': user.tipo
-                }
-            })
+                # La tabla de ventas espera campos: nombre, correo, contraseña, direccion, tipo
+                # Algunos registros antiguos almacenaban la contraseña hasheada en formato Django.
+                ventas_correo = email if email else f"{username}@no-email.local"
+                # Guardar el hash generado por Django en el campo 'contraseña' de ventas
+                VentasUsuario.objects.create(
+                    nombre=username,
+                    correo=ventas_correo,
+                    contraseña=usuario.password,
+                    direccion=direccion or '',
+                    tipo=tipo
+                )
+
+            return JsonResponse({'message': 'Usuario creado correctamente'})
 
         except json.JSONDecodeError:
             return JsonResponse({'error': 'JSON inválido'}, status=400)
@@ -116,30 +125,4 @@ def me_view(request):
     serializer = UsuarioSerializer(request.user)
     data = serializer.data
     return Response(data)
-@csrf_exempt
-def register_view(request):
-    if request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-            username = data.get('username')
-            password = data.get('password')
-            email = data.get('email', '')
-            tipo = data.get('tipo', 'comprador')  # Valor por defecto
-            direccion = data.get('direccion', '')
 
-            if Usuario.objects.filter(username=username).exists():
-                return JsonResponse({'error': 'El usuario ya existe'}, status=400)
-
-            usuario = Usuario.objects.create_user(
-                username=username,
-                password=password,
-                email=email,
-                tipo=tipo,
-                direccion=direccion
-            )
-            return JsonResponse({'message': 'Usuario creado correctamente'})
-
-        except json.JSONDecodeError:
-            return JsonResponse({'error': 'JSON inválido'}, status=400)
-
-    return JsonResponse({'error': 'Método no permitido'}, status=405)
