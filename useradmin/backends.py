@@ -63,7 +63,7 @@ class LegacyVentasBackend(ModelBackend):
             else:
                 logger.warning('LegacyVentasBackend: password did not match legacy hash for %s', username)
                 return None
-        except Exception:
+        except Exception as e:
             logger.exception('LegacyVentasBackend: exception during legacy auth for %s: %s', username, e)
             return None
 

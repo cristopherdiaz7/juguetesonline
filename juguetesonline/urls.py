@@ -21,6 +21,7 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
 )
 from useradmin.simplejwt_custom import SafeTokenRefreshView
+from useradmin.simplejwt_custom import ExtendedTokenObtainPairView
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
 from .health import health
 from django.conf import settings
@@ -31,7 +32,7 @@ urlpatterns = [
     path('api/', include('ventas.urls')),          # URLs para la app ventas
     path('api/user/', include('useradmin.urls')),  # URLs para la app useradmin
     # JWT endpoints
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/', ExtendedTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', SafeTokenRefreshView.as_view(), name='token_refresh'),
 ]
 

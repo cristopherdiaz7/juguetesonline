@@ -1,0 +1,51 @@
+﻿
+--- Railway checks: 11/11/2025 15:56:50 ---
+
+
+>>> railway -v
+
+
+>>> railway run --service juguetesonline -- python -c "import os; print(\"DATABASE_URL=\", os.getenv(\"DATABASE_URL\"))"
+
+
+>>> railway run --service juguetesonline -- python -m pip show Django
+
+
+>>> railway run --service juguetesonline -- python -m pip show PyMySQL
+
+Name: PyMySQL
+Version: 1.1.2
+Summary: Pure Python MySQL Driver
+Home-page: 
+Author: 
+Author-email: Inada Naoki <songofacandy@gmail.com>, Yutaka Matsubara <yutaka.matsubara@gmail.com>
+License: 
+Location: C:\Users\crist\AppData\Local\Programs\Python\Python313\Lib\site-packages
+Requires: 
+Required-by: 
+
+>>> railway run --service juguetesonline -- python -c "import sys; sys.path.insert(0,\
+
+iex : En línea: 1 Carácter: 51
++ ... -service juguetesonline -- python -c "import sys; sys.path.insert(0,\
++                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Falta la cadena en el terminador: ".
+En C:\Users\crist\Documents\GitHub\juguetesonline\scripts\run_railway_checks.ps1: 10 Carácter: 9
++         iex $cmd 2>&1 | Out-File $outfile -Append -Encoding utf8
++         ~~~~~~~~~~~~~
+    + CategoryInfo          : ParserError: (:) [Invoke-Expression], ParseException
+    + FullyQualifiedErrorId : TerminatorExpectedAtEndOfString,Microsoft.PowerShell.Commands.InvokeExpressionCommand
+ 
+
+>>> railway run --service juguetesonline -- python -c "import sys; sys.path.insert(0,\
+
+iex : En línea: 1 Carácter: 51
++ ... -service juguetesonline -- python -c "import sys; sys.path.insert(0,\
++                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Falta la cadena en el terminador: ".
+En C:\Users\crist\Documents\GitHub\juguetesonline\scripts\run_railway_checks.ps1: 10 Carácter: 9
++         iex $cmd 2>&1 | Out-File $outfile -Append -Encoding utf8
++         ~~~~~~~~~~~~~
+    + CategoryInfo          : ParserError: (:) [Invoke-Expression], ParseException
+    + FullyQualifiedErrorId : TerminatorExpectedAtEndOfString,Microsoft.PowerShell.Commands.InvokeExpressionCommand
+ 
