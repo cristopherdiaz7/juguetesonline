@@ -10,6 +10,8 @@ mysqlclient
 PyMySQL
 # Image handling
 Pillow
+# Required by PyMySQL when using sha256/caching_sha2_password auth
+cryptography
 # rebuild: force Docker layer cache invalidation
 
 
