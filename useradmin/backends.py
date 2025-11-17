@@ -24,14 +24,20 @@ class LegacyVentasBackend(ModelBackend):
                 return user
         except UserAdminUsuario.DoesNotExist:
             user = None
+        import logging
+        logger = logging.getLogger('useradmin.legacy')
+
+        logger.info('LegacyVentasBackend: useradmin lookup for username=%s found=%s', username, bool(user))
 
         # Second attempt: look up legacy ventas.Usuario by nombre or correo
         legacy_qs = VentasUsuario.objects.filter(nombre__iexact=username) | VentasUsuario.objects.filter(correo__iexact=username)
         legacy = legacy_qs.first()
+        logger.info('LegacyVentasBackend: legacy lookup for identifier=%s found=%s', username, bool(legacy))
         if not legacy:
             return None
 
         legacy_hash = getattr(legacy, 'contraseña', '') or ''
+        logger.debug('LegacyVentasBackend: legacy.hash present=%s', bool(legacy_hash))
         if not legacy_hash:
             return None
 
@@ -52,8 +58,13 @@ class LegacyVentasBackend(ModelBackend):
                     if getattr(legacy, 'tipo', '') == 'vendedor':
                         u.is_staff = True
                     u.save()
+                    logger.info('LegacyVentasBackend: imported/updated useradmin username=%s id=%s created=%s', u.username, u.id, created)
                 return u
+            else:
+                logger.warning('LegacyVentasBackend: password did not match legacy hash for %s', username)
+                return None
         except Exception:
+            logger.exception('LegacyVentasBackend: exception during legacy auth for %s: %s', username, e)
             return None
 
         return None
