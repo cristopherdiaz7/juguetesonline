@@ -126,3 +126,25 @@ def me_view(request):
     data = serializer.data
     return Response(data)
 
+
+# Endpoint para cambiar contraseña del usuario autenticado
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def change_password_view(request):
+    try:
+        current = request.data.get('current_password')
+        new = request.data.get('new_password')
+        if not current or not new:
+            return Response({'error': 'current_password and new_password are required'}, status=400)
+
+        user = request.user
+        if not user.check_password(current):
+            return Response({'error': 'Current password is incorrect'}, status=400)
+
+        # Optionally enforce password validation rules here
+        user.set_password(new)
+        user.save()
+        return Response({'message': 'Password changed successfully'})
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)
+
