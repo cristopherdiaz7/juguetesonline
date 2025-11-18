@@ -28,12 +28,12 @@ class LegacyVentasBackend(ModelBackend):
         import logging
         logger = logging.getLogger('useradmin.legacy')
 
-        logger.info('LegacyVentasBackend: useradmin lookup for username=%s found=%s', username, bool(user))
+        logger.warning('LegacyVentasBackend: useradmin lookup for username=%s found=%s', username, bool(user))
 
         # Second attempt: look up legacy ventas.Usuario by nombre or correo
         legacy_qs = VentasUsuario.objects.filter(nombre__iexact=username) | VentasUsuario.objects.filter(correo__iexact=username)
         legacy = legacy_qs.first()
-        logger.info('LegacyVentasBackend: legacy lookup for identifier=%s found=%s', username, bool(legacy))
+        logger.warning('LegacyVentasBackend: legacy lookup for identifier=%s found=%s', username, bool(legacy))
         if not legacy:
             return None
 
@@ -65,7 +65,7 @@ class LegacyVentasBackend(ModelBackend):
                     if getattr(legacy, 'tipo', '') == 'vendedor':
                         u.is_staff = True
                     u.save()
-                    logger.info('LegacyVentasBackend: imported/updated useradmin username=%s id=%s created=%s', u.username, u.id, created)
+                    logger.warning('LegacyVentasBackend: imported/updated useradmin username=%s id=%s created=%s', u.username, u.id, created)
                 return u
 
             # If Django's check failed, try common legacy raw-hash formats (MD5, SHA1)
@@ -86,7 +86,7 @@ class LegacyVentasBackend(ModelBackend):
                         if getattr(legacy, 'tipo', '') == 'vendedor':
                             u.is_staff = True
                         u.save()
-                        logger.info('LegacyVentasBackend: migrated MD5 legacy user %s -> id=%s created=%s', u.username, u.id, created)
+                        logger.warning('LegacyVentasBackend: migrated MD5 legacy user %s -> id=%s created=%s', u.username, u.id, created)
                     return u
 
             if len(legacy_hash_lower) == 40 and all(c in '0123456789abcdef' for c in legacy_hash_lower):
@@ -103,7 +103,7 @@ class LegacyVentasBackend(ModelBackend):
                         if getattr(legacy, 'tipo', '') == 'vendedor':
                             u.is_staff = True
                         u.save()
-                        logger.info('LegacyVentasBackend: migrated SHA1 legacy user %s -> id=%s created=%s', u.username, u.id, created)
+                        logger.warning('LegacyVentasBackend: migrated SHA1 legacy user %s -> id=%s created=%s', u.username, u.id, created)
                     return u
 
             logger.warning('LegacyVentasBackend: password did not match legacy hash for %s', username)
