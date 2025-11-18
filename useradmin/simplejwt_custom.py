@@ -1,4 +1,10 @@
 from django.core.exceptions import ObjectDoesNotExist
+import logging
+
+# Simple import-time log so we can see in deploy logs whether this module
+# was successfully imported and the token views are registered.
+logger = logging.getLogger('useradmin.token')
+logger.info('useradmin.simplejwt_custom imported')
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.serializers import TokenRefreshSerializer
 from rest_framework_simplejwt.views import TokenRefreshView

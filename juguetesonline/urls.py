@@ -27,6 +27,7 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, Sp
 from .health import health
 from django.conf import settings
 from django.conf.urls.static import static
+from django.http import HttpResponse
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -37,6 +38,8 @@ urlpatterns = [
     # Alternate direct endpoint that accepts email or username and returns tokens
     path('api/token/custom/', DirectTokenObtainView.as_view(), name='token_obtain_pair_custom'),
     path('api/token/refresh/', SafeTokenRefreshView.as_view(), name='token_refresh'),
+    # Lightweight ping endpoint to verify the Django app is reachable in production.
+    path('api/ping/', lambda request: HttpResponse('pong'), name='api-ping'),
 ]
 
 
