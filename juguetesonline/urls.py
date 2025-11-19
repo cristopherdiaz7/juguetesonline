@@ -26,6 +26,7 @@ from useradmin.simplejwt_custom import DirectTokenObtainView
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
 from .health import health
 from django.conf import settings
+import os
 from django.conf.urls.static import static
 from django.http import HttpResponse
 
@@ -50,7 +51,9 @@ urlpatterns += [
     path('api/health/', health),
 ]
 
-if settings.DEBUG:
+# Serve media files during development or when explicitly enabled via env var.
+# In production it's recommended to use a proper media/static host (S3, CDN, or webserver).
+if settings.DEBUG or os.getenv('SERVE_MEDIA', '').lower() in ('1', 'true', 'yes'):
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
